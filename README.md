@@ -15,7 +15,7 @@ Open `index.html` in a modern browser. No build step is required.
 - Loads real card art from public RoyaleAPI / RoyaleAPI asset URLs with fallbacks.
 
 ## Perfect Deck model
-The exact role, synergy, counter, and 3.5 average-Elixir rules are embedded in `data.js` from the project spreadsheet.
+The structural role, synergy, counter, and 3.5 average-Elixir rules are embedded in `data.js`. Personal 1–10 card ratings and the 7.8/10 minimum deck-average target are loaded from `ratings.js`; `rating-engine.js` adds them to scoring and optimization.
 
 The priority-counter requirement is interpreted as:
 - at least 5 targets covered at Incredible strength;
@@ -26,7 +26,9 @@ The priority-counter requirement is interpreted as:
 - `index.html` — UI shell
 - `styles.css` — responsive styling
 - `data.js` — card database extracted from the spreadsheet
-- `engine.js` — rating and optimization engine
+- `engine.js` — structural rating and optimization engine
+- `ratings.js` — personal 1–10 card ratings and the 7.8/10 target
+- `rating-engine.js` — rating-aware scoring and optimizer layer
 - `app.js` — interactive UI
 
 ## Counter audit v2
@@ -38,3 +40,8 @@ The priority matchup dataset was re-audited so every one of the 32 required targ
 ## v3 changes
 - Boss Bandit, Suspicious Bush, and P.E.K.K.A are classified as Win-Cons.
 - Equal main scores now use a deterministic tie-break: more Perfect criteria completed; Incredible counters; Great+ counters; Good+ counters; structural roles in the listed Perfect Deck order; Incredible/Great+/Good+ synergies; then lower average Elixir.
+
+## v4 changes
+- Added a personal 1–10 rating for every card.
+- A Perfect Deck now requires an average card rating of at least 7.8/10.
+- Generate, Improve current, Best swap, and swap suggestions now account for the personal rating criterion.
