@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perfect Clash Royale Deck Builder</title>
+  <meta name="description" content="Build, review and optimize Clash Royale decks against a custom Perfect Deck ruleset.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CLASH ROYALE DECK LAB</p>
+      <h1>Perfect Deck Builder</h1>
+      <p class="sub">Lock cards you want, generate the closest possible deck, then swap and improve it live.</p>
+    </div>
+    <div class="tower-fixed" id="towerFixed" title="Fixed Tower Troop: Princess Tower"></div>
+  </header>
+
+  <main class="page">
+    <section class="build-panel panel">
+      <div class="section-head">
+        <div><span class="step">1</span><h2>Tell it what you want</h2></div>
+        <span class="muted">Leave blank to build from nothing.</span>
+      </div>
+      <div class="build-row">
+        <label class="grow">
+          <span>Cards that must be in the deck</span>
+          <input id="requiredInput" type="text" autocomplete="off" placeholder="e.g. P.E.K.K.A, Graveyard, Tornado">
+        </label>
+        <button id="generateBtn" class="btn primary">Generate best deck</button>
+        <button id="improveBtn" class="btn">Improve current</button>
+      </div>
+      <div class="mini-row">
+        <div><strong>Locked:</strong> <span id="lockedChips" class="chipline"></span></div>
+        <div><strong>Excluded:</strong> <span id="bannedChips" class="chipline"></span></div>
+        <button id="clearBtn" class="text-btn">Clear deck</button>
+        <button id="resetExclusionsBtn" class="text-btn">Clear exclusions</button>
+      </div>
+      <div id="statusLine" class="status-line" aria-live="polite"></div>
+    </section>
+
+    <section class="workspace">
+      <div class="deck-side panel">
+        <div class="section-head compact">
+          <div><span class="step">2</span><h2>Your deck</h2></div>
+          <div class="elixir-pill"><span class="drop">◆</span><span id="avgElixir">—</span> avg</div>
+        </div>
+        <div id="deckGrid" class="deck-grid" aria-label="Eight card deck"></div>
+        <div class="specials">
+          <div class="special"><span>Evolution</span><strong id="evoSlot">—</strong></div>
+          <div class="special"><span>Hero / Champion</span><strong id="heroSlot">—</strong></div>
+          <div class="special"><span>Wild</span><strong id="wildSlot">—</strong></div>
+        </div>
+        <p class="hint">Click a card to choose a manual replacement. Lock it to protect it. “Best swap” excludes that card and replaces only that slot.</p>
+      </div>
+
+      <aside class="score-side panel">
+        <div class="score-top">
+          <div id="scoreRing" class="score-ring"><div><strong id="scoreValue">0</strong><span>%</span></div></div>
+          <div>
+            <p class="eyebrow">CLOSENESS TO PERFECT</p>
+            <h2 id="scoreTitle">Build a deck</h2>
+            <p id="scoreSubtitle" class="muted">The rating updates with every change.</p>
+            <p class="tie-note">Equal scores: counters → roles → synergies → lower Elixir.</p>
+          </div>
+        </div>
+        <div id="headlineStats" class="headline-stats"></div>
+      </aside>
+    </section>
+
+    <section class="analysis-grid">
+      <div class="panel">
+        <div class="section-head compact"><div><span class="step">3</span><h2>Perfect deck checklist</h2></div></div>
+        <div class="fixed-requirement"><span class="ok-dot">✓</span><strong>Princess Tower</strong><span>fixed</span></div>
+        <div id="criteriaGrid" class="criteria-grid"></div>
+      </div>
+
+      <div class="panel">
+        <div class="section-head compact"><div><span class="step">4</span><h2>How to make it better</h2></div></div>
+        <div id="adviceList" class="advice-list"></div>
+        <div id="swapSuggestions" class="swap-suggestions"></div>
+      </div>
+    </section>
+
+    <section class="analysis-grid lower">
+      <div class="panel">
+        <div class="section-head compact"><h2>Priority counter coverage</h2><span id="counterSummary" class="muted"></span></div>
+        <div class="legend"><span class="tier t3">Incredible</span><span class="tier t2">Great</span><span class="tier t1">Good</span><span class="tier t0">Missing</span></div>
+        <div id="counterGrid" class="counter-grid"></div>
+      </div>
+      <div class="panel">
+        <div class="section-head compact"><h2>Deck synergies</h2><span id="synergySummary" class="muted"></span></div>
+        <div id="synergyList" class="synergy-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="pickerModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+      <div class="modal-head"><h2 id="pickerTitle">Choose a card</h2><button id="closePicker" class="icon-btn" aria-label="Close">×</button></div>
+      <div class="picker-tools">
+        <input id="pickerSearch" type="search" placeholder="Search cards…" autocomplete="off">
+        <select id="pickerType"><option value="all">All types</option><option>Troop</option><option>Spell</option><option>Building</option></select>
+      </div>
+      <div id="pickerGrid" class="picker-grid"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <footer>
+    Card artwork is loaded from public RoyaleAPI / RoyaleAPI asset URLs. Clash Royale and its card art are property of Supercell. The scoring rules are this project's custom “Perfect Deck” model.
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
