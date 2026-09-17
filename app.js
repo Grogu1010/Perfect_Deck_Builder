@@ -76,9 +76,23 @@
       wrap.querySelector('.swap').addEventListener('click',ev=>{ev.stopPropagation();replaceDisliked(i)});
       wrap.addEventListener('click',()=>openPicker(i));grid.appendChild(wrap);
     }
-    $('evoSlot').textContent=specials.evoSlot||'—';
-    $('heroSlot').textContent=specials.heroSlot||'—';
-    $('wildSlot').textContent=specials.wildSlot?`${specials.wildSlot} · ${specials.wildType}`:'—';
+    const evo=$('evoSlot'), hero=$('heroSlot'), wild=$('wildSlot');
+    const specialRows=[evo,hero,wild].map(el=>el.closest('.special'));
+    if(state.pro){
+      evo.textContent=specials.evoSlot||'—';
+      hero.textContent=specials.heroSlot||'—';
+      wild.textContent=specials.wildSlot?`${specials.wildSlot} · ${specials.wildType}`:'—';
+      specialRows.forEach(row=>{row.classList.remove('pro-special-locked');row.onclick=null;row.removeAttribute('role');row.removeAttribute('tabindex')});
+    }else{
+      evo.textContent='PRO 🔒';
+      hero.textContent='PRO 🔒';
+      wild.textContent='PRO 🔒';
+      specialRows.forEach(row=>{
+        row.classList.add('pro-special-locked');row.setAttribute('role','button');row.setAttribute('tabindex','0');
+        row.onclick=()=>openPro('Evolution, Hero & Wild recommendations',()=>render());
+        row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();row.click()}};
+      });
+    }
   }
 
   function escapeHtml(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
