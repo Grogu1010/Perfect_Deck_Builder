@@ -55,9 +55,9 @@
   function specialBadge(cardName,specials){
     const bits=[];
     if(E.CHAMPIONS.has(cardName)) bits.push('<span class="badge champ">CHAMPION</span>');
-    if(specials.evoSlot===cardName) bits.push('<span class="badge evo">EVO</span>');
-    if(specials.heroSlot===cardName) bits.push('<span class="badge hero">HERO</span>');
-    if(specials.wildSlot===cardName) bits.push(`<span class="badge wild">WILD ${specials.wildType==='Evolution'?'EVO':'HERO'}</span>`);
+    if(state.pro && specials.evoSlot===cardName) bits.push('<span class="badge evo">EVO</span>');
+    if(state.pro && specials.heroSlot===cardName) bits.push('<span class="badge hero">HERO</span>');
+    if(state.pro && specials.wildSlot===cardName) bits.push(`<span class="badge wild">WILD ${specials.wildType==='Evolution'?'EVO':'HERO'}</span>`);
     return bits.join('');
   }
 
@@ -82,7 +82,7 @@
       evo.textContent=specials.evoSlot||'—';
       hero.textContent=specials.heroSlot||'—';
       wild.textContent=specials.wildSlot?`${specials.wildSlot} · ${specials.wildType}`:'—';
-      specialRows.forEach(row=>{row.classList.remove('pro-special-locked');row.onclick=null;row.removeAttribute('role');row.removeAttribute('tabindex')});
+      specialRows.forEach(row=>{row.classList.remove('pro-special-locked');row.onclick=null;row.onkeydown=null;row.removeAttribute('role');row.removeAttribute('tabindex')});
     }else{
       evo.textContent='PRO 🔒';
       hero.textContent='PRO 🔒';
@@ -115,7 +115,12 @@
     $('headlineStats').innerHTML=`<div class="stat"><span>Counter coverage</span><strong>${r.counters.goodOrBetter}/${D.counterTargets.length}</strong></div><div class="stat"><span>Incredible counters</span><strong>${r.counters.incredible}/5</strong></div><div class="stat"><span>Good+ synergies</span><strong>${r.synergies.goodOrBetter}</strong></div><div class="stat"><span>Champions</span><strong>${r.championCount}/${D.perfect.maxChampions}</strong></div>`;
 
     $('criteriaGrid').innerHTML=r.criteria.map(c=>`<div class="criterion ${c.met?'met':''}"><span class="state">${c.met?'✓':'!'}</span><b>${escapeHtml(c.label)}</b><small>${escapeHtml(c.detail)}</small><span class="progress"><i style="width:${Math.round(c.progress*100)}%"></i></span></div>`).join('');
-    $('adviceList').innerHTML=ex.notes.slice(0,9).map(n=>`<div class="advice ${n.kind}">${escapeHtml(n.text)}</div>`).join('');
+    if(state.pro){
+      $('adviceList').innerHTML=ex.notes.slice(0,9).map(n=>`<div class="advice ${n.kind}">${escapeHtml(n.text)}</div>`).join('');
+    }else{
+      $('adviceList').innerHTML='<div class="pro-teaser"><b>PRO</b> Detailed deck improvement advice is locked. <button type="button" class="text-btn">Unlock free</button></div>';
+      $('adviceList').querySelector('button').addEventListener('click',()=>openPro('Detailed deck improvement advice',()=>render()));
+    }
     renderSwaps(ex.swaps);
     renderCounters(r);renderSynergies(r);
   }
