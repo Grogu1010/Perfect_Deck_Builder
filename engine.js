@@ -354,6 +354,9 @@
       return -compareTieBreak(a.deck,b.deck);
     };
 
+    const canonicalBest=generateBest({required,banned:[...banned],starts:40});
+    if(!canonicalBest.error) addDeck(canonicalBest.deck);
+
     for(let i=0;i<starts;i++){
       const rng=mulberry32(424242+i*104729+required.join('|').length*97+banned.size*31);
       let seed=makeSeed(required,banned,rng);
