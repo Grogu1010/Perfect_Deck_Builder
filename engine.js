@@ -331,6 +331,63 @@
     return {deck:best,rating:deckMetrics(best),specials:autoSpecials(best),objective:bestObj};
   }
 
+  function generateTopDecks(opts={}){
+    const val=validateConstraints(opts.required||[],opts.banned||[]);
+    if(!val.ok) return {error:val.error};
+    const required=val.required, banned=val.banned, locked=new Set(required);
+    const limit=Math.max(1,Math.min(15,opts.limit||15));
+    const starts=Math.max(24,Math.min(96,opts.starts||56));
+    const ranked=new Map();
+
+    const addDeck=deck=>{
+      if(!deck || deck.length!==8 || new Set(deck).size!==8) return;
+      if(deck.some(n=>banned.has(n))) return;
+      if(required.some(n=>!deck.includes(n))) return;
+      if(deck.filter(n=>CHAMPIONS.has(n)).length>PERFECT.maxChampions) return;
+      const key=[...deck].sort().join('|');
+      const obj=objective(deck);
+      const prev=ranked.get(key);
+      if(!prev || isBetterDeck(deck,obj,prev.deck,prev.objective)) ranked.set(key,{deck:[...deck],objective:obj});
+    };
+    const sorter=(a,b)=>{
+      if(Math.abs(a.objective-b.objective)>EPS) return b.objective-a.objective;
+      return -compareTieBreak(a.deck,b.deck);
+    };
+
+    for(let i=0;i<starts;i++){
+      const rng=mulberry32(424242+i*104729+required.join('|').length*97+banned.size*31);
+      let seed=makeSeed(required,banned,rng);
+      if(seed.length<8) continue;
+      seed=optimizeDeck(seed,locked,banned,4);
+      addDeck(seed);
+    }
+
+    // Add high-quality one-card neighbours so the list stays useful and varied
+    // even when several randomized searches converge on the same optimum.
+    const bases=[...ranked.values()].sort(sorter).slice(0,4);
+    for(const base of bases){
+      const names=base.deck;
+      for(let i=0;i<8;i++){
+        if(locked.has(names[i])) continue;
+        for(const card of PLAYABLE){
+          if(card.name===names[i] || banned.has(card.name) || names.includes(card.name)) continue;
+          const next=[...names]; next[i]=card.name;
+          addDeck(next);
+        }
+      }
+    }
+
+    const decks=[...ranked.values()].sort(sorter).slice(0,limit).map((item,index)=>({
+      rank:index+1,
+      deck:item.deck,
+      rating:deckMetrics(item.deck),
+      specials:autoSpecials(item.deck),
+      objective:item.objective
+    }));
+    if(!decks.length) return {error:'Could not rank valid decks with those restrictions.'};
+    return {decks};
+  }
+
   function improveDeck(deck, opts={}){
     const names=(deck||[]).filter(n=>CARD_BY_NAME.has(n));
     if(names.length!==8) return {error:'Fill all 8 deck slots before improving the deck.'};
@@ -450,7 +507,7 @@
     return {rating:r,notes,uncovered,onlyGood,onlyGreat,swaps:topSwapSuggestions(deck,opts)};
   }
 
-  const API={DATA,CARD_BY_NAME,PLAYABLE,CHAMPIONS,ROLE_META,resolveCardName,parseCardNames,counterTier,synergyTier,deckMetrics,objective,tieBreakVector,compareTieBreak,generateBest,improveDeck,bestReplacement,topSwapSuggestions,autoSpecials,explainDeck};
+  const API={DATA,CARD_BY_NAME,PLAYABLE,CHAMPIONS,ROLE_META,resolveCardName,parseCardNames,counterTier,synergyTier,deckMetrics,objective,tieBreakVector,compareTieBreak,generateBest,generateTopDecks,improveDeck,bestReplacement,topSwapSuggestions,autoSpecials,explainDeck};
   root.DeckEngine=API;
   if(typeof module!=='undefined'&&module.exports) module.exports=API;
 })(typeof globalThis!=='undefined'?globalThis:this);
