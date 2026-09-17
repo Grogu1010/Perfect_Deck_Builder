@@ -335,7 +335,7 @@
     const val=validateConstraints(opts.required||[],opts.banned||[]);
     if(!val.ok) return {error:val.error};
     const required=val.required, banned=val.banned, locked=new Set(required);
-    const limit=Math.max(1,Math.min(15,opts.limit||15));
+    const limit=Math.max(1,Math.min(30,opts.limit||15));
     const starts=Math.max(24,Math.min(96,opts.starts||56));
     const ranked=new Map();
 
