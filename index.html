@@ -14,7 +14,10 @@
       <h1>Perfect Deck Builder</h1>
       <p class="sub">Lock cards you want, generate the closest possible deck, then swap and improve it live.</p>
     </div>
-    <div class="tower-fixed" id="towerFixed" title="Fixed Tower Troop: Princess Tower"></div>
+    <div class="topbar-actions">
+      <button id="proStatusBtn" class="pro-status" type="button">PRO · Limited-time free</button>
+      <div class="tower-fixed" id="towerFixed" title="Fixed Tower Troop: Princess Tower"></div>
+    </div>
   </header>
 
   <main class="page">
@@ -29,7 +32,7 @@
           <input id="requiredInput" type="text" autocomplete="off" placeholder="e.g. P.E.K.K.A, Graveyard, Tornado">
         </label>
         <button id="generateBtn" class="btn primary">Generate best deck</button>
-        <button id="improveBtn" class="btn">Improve current</button>
+        <button id="improveBtn" class="btn pro-locked-btn">Improve current · PRO</button>
       </div>
       <div class="mini-row">
         <div><strong>Locked:</strong> <span id="lockedChips" class="chipline"></span></div>
@@ -52,7 +55,7 @@
           <div class="special"><span>Hero / Champion</span><strong id="heroSlot">—</strong></div>
           <div class="special"><span>Wild</span><strong id="wildSlot">—</strong></div>
         </div>
-        <p class="hint">Click a card to choose a manual replacement. Lock it to protect it. “Best swap” excludes that card and replaces only that slot.</p>
+        <p class="hint">Click a card to choose a manual replacement. Lock it to protect it. “Best swap” is a Pro feature.</p>
       </div>
 
       <aside class="score-side panel">
@@ -67,6 +70,17 @@
         </div>
         <div id="headlineStats" class="headline-stats"></div>
       </aside>
+    </section>
+
+    <section class="panel top-decks-panel">
+      <div class="section-head">
+        <div><span class="step pro-step">PRO</span><h2>Top 15 decks</h2></div>
+        <button id="topDecksBtn" class="btn pro-btn" type="button">See Top 15 · PRO</button>
+      </div>
+      <p class="muted top-decks-copy">Rank 15 strong deck options against the Perfect Deck model while respecting your required and excluded cards.</p>
+      <div id="topDecksContent" class="top-decks-content">
+        <div class="pro-teaser">Top 15 deck rankings require Perfect Deck Builder Pro.</div>
+      </div>
     </section>
 
     <section class="analysis-grid">
@@ -104,6 +118,26 @@
         <select id="pickerType"><option value="all">All types</option><option>Troop</option><option>Spell</option><option>Building</option></select>
       </div>
       <div id="pickerGrid" class="picker-grid"></div>
+    </div>
+  </div>
+
+  <div id="proModal" class="modal" hidden>
+    <div class="modal-card pro-modal-card" role="dialog" aria-modal="true" aria-labelledby="proModalTitle">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">PERFECT DECK BUILDER PRO</p>
+          <h2 id="proModalTitle">Unlock the good stuff</h2>
+        </div>
+        <button id="closeProModal" class="icon-btn" type="button" aria-label="Close">×</button>
+      </div>
+      <p id="proFeatureName" class="pro-feature-name">This feature requires Pro.</p>
+      <div class="pro-price">
+        <span class="old-price">$19.99/month</span>
+        <strong>FREE</strong>
+      </div>
+      <p class="pro-offer"><b>LIMITED TIME:</b> the discount is available for the next 100,000 years.</p>
+      <button id="activateProBtn" class="btn primary pro-activate" type="button">Get Pro free</button>
+      <p class="pro-fineprint">Demo unlock only. No payment is processed. Pro resets when the page is refreshed or reopened.</p>
     </div>
   </div>
 
